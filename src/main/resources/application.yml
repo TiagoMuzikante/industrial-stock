@@ -1,0 +1,31 @@
+server:
+  error:
+    include-stacktrace: on_param
+spring:
+  application:
+    name: Industrial Stock
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    hikari:
+      auto-commit: true
+      minimum-idle: 3
+      maximum-pool-size: 30
+      idle-timeout: 30000
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+  level:
+    org:
+      hibernate:
+        TransactionA: TRACE
+        SQL: DEBUG
+    springframework:
+      orm:
+        jpa: DEBUG
+      transaction: TRACE
+      beans:
+        factory: DEBUG

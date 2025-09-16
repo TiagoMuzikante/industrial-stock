@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${DATABASE_URL}:${DATABASE_PORT}/${POSTGRES_DB}?createDatabaseIfNotExist=true
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+jwt:
+  secretLogin: ${SECRET_AUTHENTICATION}
+  secretClient:  ${CLIENT_SECRET}

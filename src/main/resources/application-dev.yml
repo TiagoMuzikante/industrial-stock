@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:4740/springenv?createDatabaseIfNotExist=true
+    username: springuser
+    password: losted49
+jwt:
+  secretLogin: G2W6KL84+FfD1JkghVlwqC8Hr+q1V3w1uGSvSMKvPRM=
+  secretClient: xY4PBmjL7Eu7eA2HT8qLuOTrh9W0CKwPtmk8qRJZ+R0=
