@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${DATABASE_URL}:${DATABASE_PORT}/${POSTGRES_DB}?createDatabaseIfNotExist=true
+    url: ${DATABASE_URL}?createDatabaseIfNotExist=true
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 jwt:
