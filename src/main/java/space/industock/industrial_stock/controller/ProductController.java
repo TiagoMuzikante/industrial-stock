@@ -13,11 +13,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/produtos")
+@RequestMapping("/products")
 @CrossOrigin
 public class ProductController {
 
-  private ProductManagerService service;
+  private final ProductManagerService service;
 
   @PostMapping
   public ResponseEntity<ProductGetDTO> save(@RequestBody ProductPostDTO productPostDTO){

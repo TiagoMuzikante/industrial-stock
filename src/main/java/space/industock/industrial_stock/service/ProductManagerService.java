@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.Product;
 import space.industock.industrial_stock.dto.product.ProductGetDTO;
 import space.industock.industrial_stock.dto.product.ProductPostDTO;
+import space.industock.industrial_stock.exception.UnauthorizedException;
 import space.industock.industrial_stock.mapper.ProductMapper;
 import space.industock.industrial_stock.service.domain.ProductService;
 
@@ -15,8 +16,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductManagerService {
 
-  private ProductService productService;
-  private ProductMapper productMapper;
+  private final ProductService productService;
+  private final ProductMapper productMapper;
 
   public ProductGetDTO saveProduct(ProductPostDTO productPostDTO){
     Product product = productMapper.toProduct(productPostDTO);
@@ -43,15 +44,14 @@ public class ProductManagerService {
 
   public ProductGetDTO decrementProductAmount(Long id, Integer amount){
     Product product = productService.findById(id);
+
     if(product.getAmount() < amount){
-
+      throw new UnauthorizedException("Quantidade para retirada invalida ou acima do limite");
     }
-
 
     product.setAmount(product.getAmount() - amount);
 
     return productMapper.toProductGetDTO(productService.save(product));
   }
-
 
 }
