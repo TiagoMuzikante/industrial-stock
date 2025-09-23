@@ -1,12 +1,19 @@
 package space.industock.industrial_stock.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import space.industock.industrial_stock.utils.Role;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -14,20 +21,16 @@ import java.util.UUID;
 @Data
 @Builder
 @Table(name = "app_user")
-//@SequenceGenerator (name = "numero_pedido_seq", sequenceName = "numero_pedido_seq", allocationSize = 1 )
 public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-//  @Column(name = "numero_pedido", insertable = false, updatable = false, columnDefinition = "BIGINT DEFAULT nextval('numero_pedido_seq')")
+  @Column(nullable = false, unique = true)
   private String name;
-  private String email;
-  private String document_cpf;
   private String password;
-  private Integer registerNumber;
-
+  private Boolean restartPassword = false;
 
   // auth
   private Boolean isEnable;
@@ -35,4 +38,14 @@ public class User {
   private Boolean isAccountNonExpired;
   private Boolean isCredentialsNonExpired;
   private String authorities;
+
+  @OneToMany(mappedBy = "user")
+  private List<ProductHistoric> productHistorics;
+
+
+  public List<ProductHistoric> getProductHistoricsBetweenDates(LocalDate startDate, LocalDate endDate){
+    return productHistorics.stream()
+        .filter(historic -> (!historic.getDateTime().toLocalDate().isBefore(startDate) && !historic.getDateTime().toLocalDate().isAfter(endDate)))
+        .collect(Collectors.toList());
+  }
 }
