@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -19,16 +20,16 @@ public class JwtUtil {
     return new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
   }
 
-  public String generateToken(String email){
+  public String generateToken(UUID userId){
     return Jwts.builder()
-        .setSubject(email)
+        .setSubject(userId.toString())
         .setIssuedAt(new Date())
         .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
         .signWith(SignatureAlgorithm.HS256, getSecret())
         .compact();
   }
 
-  public String extractUsername(String token){
+  public String extractUserId(String token){
     return Jwts.parser()
         .setSigningKey(getSecret())
         .build()
@@ -39,7 +40,7 @@ public class JwtUtil {
 
   public boolean isValid(String token){
     try {
-      extractUsername(token);
+      extractUserId(token);
       return true;
     } catch (Exception e){
       return false;
