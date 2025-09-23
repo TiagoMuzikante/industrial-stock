@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import space.industock.industrial_stock.utils.Role;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -12,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class UserPostDTO {
 
   private String name;
-  private String email;
-  private String document_cpf;
-  private String password;
+  private List<Role> authorities;
 
 }

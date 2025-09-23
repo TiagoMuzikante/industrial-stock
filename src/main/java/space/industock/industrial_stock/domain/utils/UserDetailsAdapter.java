@@ -9,7 +9,6 @@ import space.industock.industrial_stock.domain.User;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Log4j2
@@ -37,8 +36,8 @@ public class UserDetailsAdapter implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
     log.info(user.getAuthorities());
     return Arrays.stream(user.getAuthorities().split(","))
-        .map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toList());
+        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
+        .toList();
   }
 
   @Override
@@ -48,6 +47,10 @@ public class UserDetailsAdapter implements UserDetails {
 
   @Override
   public String getUsername() {
-    return user.getEmail();
+    return user.getName();
+  }
+
+  public User getUser() {
+    return user;
   }
 }

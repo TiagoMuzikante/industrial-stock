@@ -15,7 +15,6 @@ public class UserGetDTO {
 
   private UUID id;
   private String name;
-  private String email;
-  private String document_cpf;
+  private String authorities;
 
 }
