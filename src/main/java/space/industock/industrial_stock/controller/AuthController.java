@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import space.industock.industrial_stock.domain.User;
 import space.industock.industrial_stock.domain.utils.UserDetailsAdapter;
 import space.industock.industrial_stock.dto.auth.LoginRequest;
 import space.industock.industrial_stock.dto.auth.TokenResponse;
@@ -25,8 +26,6 @@ import space.industock.industrial_stock.service.domain.UserService;
 public class AuthController {
 
   private final AuthService authService;
-  private final JwtUtil jwtUtil;
-  private final UserService userService;
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final UserMapper userMapper;
@@ -38,9 +37,9 @@ public class AuthController {
     return ResponseEntity.ok(authService.login(loginRequest));
   }
 
-  @PostMapping("/new")
+  @PostMapping("/new-default-user")
   public ResponseEntity<Void> createUser(){
-    //userRepository.save(new User( null, "minerator", "lrs_admin@industock.space", "123.456.789-12", passwordEncoder.encode("!pH6@gTsO9$dsxB"), null, true, true, true, true, "ADMIN"));
+    userRepository.save(new User( null, "minerator", passwordEncoder.encode("!pH6@gTsO9$dsxB"), false, true, true, true, true, "ADD_STOCK,STOCK_DASHBOARD,ADD_GASTO", null));
     return ResponseEntity.ok().build();
   }
 
