@@ -32,7 +32,7 @@ public class AuthService {
   private String frontToken;
 
   public TokenResponse login(LoginRequest request){
-    User user = userRepository.findByName(request.getName()).orElseThrow(() -> new UnauthorizedException("Usuario nao encontrado"));
+    User user = userRepository.findByName(request.getName()).orElseThrow(() -> new UnauthorizedException("Acesso não autorizado."));
 
     if(user.getRestartPassword()){
       userManagerService.setPassword(user, request.getPassword());

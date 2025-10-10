@@ -1,14 +1,17 @@
 package space.industock.industrial_stock.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.industock.industrial_stock.domain.User;
 import space.industock.industrial_stock.domain.utils.UserDetailsAdapter;
+import space.industock.industrial_stock.dto.auth.CurrentUser;
 import space.industock.industrial_stock.dto.auth.LoginRequest;
 import space.industock.industrial_stock.dto.auth.TokenResponse;
 import space.industock.industrial_stock.dto.user.UserGetDTO;
@@ -16,22 +19,23 @@ import space.industock.industrial_stock.mapper.UserMapper;
 import space.industock.industrial_stock.repository.UserRepository;
 import space.industock.industrial_stock.service.auth.JwtUtil;
 import space.industock.industrial_stock.service.domain.AuthService;
-import space.industock.industrial_stock.service.domain.UserService;
 
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Log4j2
+@Validated
 public class AuthController {
 
   private final AuthService authService;
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final JwtUtil jwtUtil;
 
   @PostMapping("/login")
-  public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest){
+  public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest loginRequest){
     log.info(loginRequest.toString());
 
     return ResponseEntity.ok(authService.login(loginRequest));
@@ -39,26 +43,25 @@ public class AuthController {
 
   @PostMapping("/new-default-user")
   public ResponseEntity<Void> createUser(){
-    userRepository.save(new User( null, "minerator", passwordEncoder.encode("!pH6@gTsO9$dsxB"), false, true, true, true, true, "ADD_STOCK,STOCK_DASHBOARD,ADD_GASTO", null));
+    //userRepository.save(new User( null, "minerator", passwordEncoder.encode("!pH6@gTsO9$dsxB"), false, true, true, true, true, "ADD_STOCK, STOCK_DASHBOARD, ADD_GASTO", null));
     return ResponseEntity.ok().build();
   }
 
   @GetMapping("/current")
-  public ResponseEntity<UserGetDTO> currentUser(@RequestHeader("Authorization") String token){
-//  Faker faker = new Faker(new Locale("pt-BR"));
-//
-//    for(int i =0; i<=100; i++){
-//      Product product = new Product();
-//      product.setName(faker.name().title());
-//      product.setAvailableAmount(faker.number().numberBetween(10, 40));
-//      product.setMinimumAmount(faker.number().numberBetween(0, 19));
-//      productRepository.save(product);
-//    }
+  public ResponseEntity<CurrentUser> currentUser(@RequestHeader("Authorization") @Valid String token){
+    if(jwtUtil.isTokenExpired(token.substring(7))){
+      return ResponseEntity.ok(new CurrentUser(true, null));
+    }
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-    return ResponseEntity.ok(userMapper.toUserGetDTO(((UserDetailsAdapter) auth.getPrincipal()).getUser()));
+    UserGetDTO user = userMapper.toUserGetDTO(((UserDetailsAdapter) auth.getPrincipal()).getUser());
+    return ResponseEntity.ok(new CurrentUser(jwtUtil.isTokenExpired(token.substring(7)), user));
   }
 
+  @GetMapping("/current-user")
+  public ResponseEntity<User> currentUserFull(@RequestHeader("Authorization") @Valid String token){
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    return ResponseEntity.ok(((UserDetailsAdapter) auth.getPrincipal()).getUser());
+  }
 }
 
 

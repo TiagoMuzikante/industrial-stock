@@ -1,14 +1,10 @@
 package space.industock.industrial_stock.domain;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import space.industock.industrial_stock.utils.Role;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,6 +38,9 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<ProductHistoric> productHistorics;
 
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "role_id")
+  private Role role;
 
   public List<ProductHistoric> getProductHistoricsBetweenDates(LocalDate startDate, LocalDate endDate){
     return productHistorics.stream()

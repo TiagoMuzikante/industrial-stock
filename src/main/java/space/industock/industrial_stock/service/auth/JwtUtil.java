@@ -1,5 +1,7 @@
 package space.industock.industrial_stock.service.auth;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,14 @@ public class JwtUtil {
     return new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
   }
 
+  private Claims extractAllClaims(String token){
+    return Jwts.parser()
+        .setSigningKey(getSecret())
+        .build()
+        .parseClaimsJws(token)
+        .getBody();
+  }
+
   public String generateToken(UUID userId){
     return Jwts.builder()
         .setSubject(userId.toString())
@@ -30,19 +40,26 @@ public class JwtUtil {
   }
 
   public String extractUserId(String token){
-    return Jwts.parser()
-        .setSigningKey(getSecret())
-        .build()
-        .parseClaimsJws(token)
-        .getBody()
-        .getSubject();
+    return extractAllClaims(token).getSubject();
+  }
+
+  public Date extractExpiration(String token){
+    return extractAllClaims(token).getExpiration();
+  }
+
+  public boolean isTokenExpired(String token){
+    return extractExpiration(token).before(new Date());
   }
 
   public boolean isValid(String token){
     try {
       extractUserId(token);
+      if(isTokenExpired(token)){
+        Claims claims = extractAllClaims(token);
+        throw new ExpiredJwtException(null, claims, "Token expirado");
+      }
       return true;
-    } catch (Exception e){
+    } catch (Exception ex){
       return false;
     }
   }

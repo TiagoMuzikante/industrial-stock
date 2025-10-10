@@ -1,20 +1,19 @@
 package space.industock.industrial_stock.domain.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import space.industock.industrial_stock.domain.User;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 
-@AllArgsConstructor
-@Log4j2
+@NoArgsConstructor
 public class UserDetailsAdapter implements UserDetails {
 
   private User user;
+  private Set<SimpleGrantedAuthority> authorities;
 
   public boolean isAccountNonExpired() {
     return user.getIsAccountNonExpired();
@@ -34,10 +33,7 @@ public class UserDetailsAdapter implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    log.info(user.getAuthorities());
-    return Arrays.stream(user.getAuthorities().split(","))
-        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
-        .toList();
+    return this.authorities;
   }
 
   @Override
@@ -52,5 +48,10 @@ public class UserDetailsAdapter implements UserDetails {
 
   public User getUser() {
     return user;
+  }
+
+  public UserDetailsAdapter(User user, Set<SimpleGrantedAuthority> authorities) {
+    this.user = user;
+    this.authorities = authorities;
   }
 }

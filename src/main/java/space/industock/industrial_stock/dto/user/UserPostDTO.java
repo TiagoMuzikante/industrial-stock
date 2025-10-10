@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import space.industock.industrial_stock.utils.Role;
+import space.industock.industrial_stock.enums.RoleEnum;
 
 import java.util.List;
 
@@ -15,6 +15,6 @@ import java.util.List;
 public class UserPostDTO {
 
   private String name;
-  private List<Role> authorities;
+  private List<RoleEnum> authorities;
 
 }
