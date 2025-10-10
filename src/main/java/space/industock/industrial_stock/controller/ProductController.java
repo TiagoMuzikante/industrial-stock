@@ -24,13 +24,13 @@ public class ProductController {
   private final ProductManagerService service;
 
   @PostMapping
-  @PreAuthorize("hasRole('ADD_STOCK')")
+  @PreAuthorize("hasAuthority('ADD_STOCK')")
   public ResponseEntity<ProductGetDTO> save(@RequestBody ProductPostDTO productPostDTO){
     return new ResponseEntity<>(service.saveProduct(productPostDTO), HttpStatus.CREATED);
   }
 
   @PatchMapping("/update/{id}")
-  @PreAuthorize("hasRole('ADD_STOCK')")
+  @PreAuthorize("hasAuthority('ADD_STOCK')")
   public ResponseEntity<ProductGetDTO> replace(@RequestBody ProductPostDTO productPostDTO, @PathVariable Long id){
     return ResponseEntity.ok(service.replaceProduct(productPostDTO, id));
   }
@@ -42,17 +42,18 @@ public class ProductController {
 
 
   @PatchMapping("/increment/{id}")
-  @PreAuthorize("hasRole('ADD_STOCK')")
+  @PreAuthorize("hasAuthority('ADD_STOCK')")
   public ResponseEntity<ProductGetDTO> increment(@PathVariable Long id, @PathParam("amount") Integer amount){
     return ResponseEntity.ok(service.incrementProductAmount(id, amount));
   }
 
+  @PreAuthorize("hasAuthority('REMOVE_STOCK')")
   @PatchMapping("/decrement/{id}")
   public ResponseEntity<ProductGetDTO> decrement(@PathVariable Long id, @PathParam("amount") Integer amount){
     return ResponseEntity.ok(service.decrementProductAmount(id, amount));
   }
 
-  @PreAuthorize("hasRole('STOCK_DASHBOARD')")
+  @PreAuthorize("hasAuthority('STOCK_DASHBOARD')")
   @GetMapping("/resume")
   public ResponseEntity<List<ProductHistoryDTO>> productHistoricDash(@RequestParam("order_by") String orderBy, @RequestParam("start_date") LocalDate startDate, @RequestParam("end_date") LocalDate endDate){
     return ResponseEntity.ok(service.findProductHistoric(orderBy, startDate, endDate));
