@@ -1,13 +1,13 @@
 package space.industock.industrial_stock.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.Expense;
 import space.industock.industrial_stock.domain.utils.UserDetailsAdapter;
 import space.industock.industrial_stock.dto.expense.ExpenseGetDTO;
 import space.industock.industrial_stock.dto.expense.ExpensePostDTO;
+import space.industock.industrial_stock.enums.ExpenseType;
 import space.industock.industrial_stock.mapper.ExpenseMapper;
 import space.industock.industrial_stock.service.domain.ExpenseService;
 
@@ -29,7 +29,9 @@ public class ExpenseServiceManager {
     return expenseMapper.toExpenseGetDTO(expenseService.save(expense));
   }
 
-  public List<ExpenseGetDTO> findAllByYearMonth(YearMonth yearMonth){
+  public List<ExpenseGetDTO> findAllByYearMonthAndType(YearMonth yearMonth, ExpenseType type){
+    if(type != null)
+      return expenseService.findAllByYearMonthAndType(yearMonth, type).stream().map(expenseMapper::toExpenseGetDTO).toList();
     return expenseService.findAllByYearMonth(yearMonth).stream().map(expenseMapper::toExpenseGetDTO).toList();
   }
 
