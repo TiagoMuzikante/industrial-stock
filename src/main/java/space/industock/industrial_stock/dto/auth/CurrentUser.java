@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import space.industock.industrial_stock.dto.user.UserGetDTO;
 
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -14,7 +16,7 @@ import space.industock.industrial_stock.dto.user.UserGetDTO;
 public class CurrentUser {
 
   private boolean expired;
-  private UserGetDTO userGetDTO;
-
+  private List<String> authorities;
+  private UserGetDTO user;
 
 }

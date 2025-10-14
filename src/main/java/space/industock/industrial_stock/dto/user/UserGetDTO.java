@@ -15,6 +15,5 @@ public class UserGetDTO {
 
   private UUID id;
   private String name;
-  private String authorities;
 
 }
