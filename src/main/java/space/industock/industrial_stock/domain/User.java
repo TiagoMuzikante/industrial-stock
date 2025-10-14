@@ -33,7 +33,6 @@ public class User {
   private Boolean isAccountNonLocked;
   private Boolean isAccountNonExpired;
   private Boolean isCredentialsNonExpired;
-  private String authorities;
 
   @OneToMany(mappedBy = "user")
   private List<ProductHistoric> productHistorics;
