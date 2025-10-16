@@ -28,6 +28,8 @@ public class Expense {
   @Enumerated(EnumType.ORDINAL)
   private ExpenseType type;
 
+  private String description;
+
   @Column(nullable = false)
   private Integer value;
 

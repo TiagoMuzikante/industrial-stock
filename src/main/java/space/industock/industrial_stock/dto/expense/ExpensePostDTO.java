@@ -21,4 +21,6 @@ public class ExpensePostDTO {
   @Min(value = 1, message = "O valor não pode ser menor do que 1.")
   private Integer value;
 
+  private String description;
+
 }

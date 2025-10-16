@@ -17,6 +17,7 @@ public class ExpenseGetDTO {
   private String userName;
   private ExpenseType type;
   private Integer value;
+  private String description;
   private LocalDateTime createdAt;
 
 }
