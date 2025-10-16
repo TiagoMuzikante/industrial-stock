@@ -28,6 +28,7 @@ public class Expense {
   @Enumerated(EnumType.ORDINAL)
   private ExpenseType type;
 
+  @Column(columnDefinition="text")
   private String description;
 
   @Column(nullable = false)
