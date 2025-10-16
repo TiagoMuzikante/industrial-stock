@@ -1,5 +1,6 @@
 package space.industock.industrial_stock.dto.expense;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class ExpenseGetDTO {
   private ExpenseType type;
   private Integer value;
   private String description;
+  @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
   private LocalDateTime createdAt;
 
 }
