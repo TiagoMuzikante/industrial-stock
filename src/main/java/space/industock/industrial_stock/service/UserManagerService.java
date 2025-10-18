@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.User;
-import space.industock.industrial_stock.dto.user.UserGetDTO;
-import space.industock.industrial_stock.dto.user.UserPostDTO;
+import space.industock.industrial_stock.dto.UserDTO;
 import space.industock.industrial_stock.mapper.UserMapper;
 import space.industock.industrial_stock.service.domain.UserService;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,14 +16,14 @@ public class UserManagerService {
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
 
-  public UserGetDTO saveUser(UserPostDTO userPostDTO){
+  public UserDTO saveUser(UserDTO userPostDTO){
     User user = userMapper.toUser(userPostDTO);
     user.setRestartPassword(true);
     user.setIsEnable(true);
     user.setIsAccountNonLocked(true);
     user.setIsAccountNonExpired(true);
     user.setIsCredentialsNonExpired(true);
-    return userMapper.toUserGetDTO(userService.save(user));
+    return userMapper.toDto(userService.save(user));
   }
 
   public void setPassword(User user, String password){

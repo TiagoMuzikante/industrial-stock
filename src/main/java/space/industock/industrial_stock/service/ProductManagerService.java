@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import space.industock.industrial_stock.domain.Product;
 import space.industock.industrial_stock.domain.ProductHistoric;
 import space.industock.industrial_stock.domain.utils.UserDetailsAdapter;
-import space.industock.industrial_stock.dto.product.ProductGetDTO;
-import space.industock.industrial_stock.dto.product.ProductPostDTO;
+import space.industock.industrial_stock.dto.ProductDTO;
 import space.industock.industrial_stock.dto.productHistory.ProductHistoryDTO;
 import space.industock.industrial_stock.event.ProductMovimentEvent;
 import space.industock.industrial_stock.exception.UnauthorizedException;
@@ -39,27 +38,24 @@ public class ProductManagerService {
   private final ProductHistoricMapper productHistoricMapper;
   private final ApplicationEventPublisher publisher;
 
-  public ProductGetDTO saveProduct(ProductPostDTO productPostDTO){
+  public ProductDTO saveProduct(ProductDTO productPostDTO){
     Product product = productMapper.toProduct(productPostDTO);
-    return productMapper.toProductGetDTO(productService.save(product));
+    return productMapper.toDto(productService.save(product));
   }
 
-  public ProductGetDTO replaceProduct(ProductPostDTO productPostDTO, Long id){
+  public ProductDTO replaceProduct(ProductDTO productPostDTO, Long id){
     Product product = productMapper.toProduct(productPostDTO);
     product.setId(id);
-    return productMapper.toProductGetDTO(productService.save(product));
+    return productMapper.toDto(productService.save(product));
   }
 
-  public List<ProductGetDTO> findAllProduct(){
+  public List<ProductDTO> findAllProduct(){
     return productService.findAll().stream()
-        .map(productMapper::toProductGetDTO)
+        .map(productMapper::toDto)
         .collect(Collectors.toList());
   }
 
   public List<ProductHistoryDTO> findProductHistoric(String orderBy, LocalDate startDate, LocalDate endDate){
-
-    log.warn(orderBy);
-
     if(orderBy.equals("product")){
       return productHistoricMapper.toHistoricByProductDTO(productService.findAll(), startDate, endDate);
     }else if (orderBy.equals("user")){
@@ -71,18 +67,18 @@ public class ProductManagerService {
 
 
   @Transactional
-  public ProductGetDTO incrementProductAmount(Long id, Integer amount){
+  public ProductDTO incrementProductAmount(Long id, Integer amount){
     Product product = productService.findById(id);
     Integer oldAmount = product.getAmount();
     product.setAmount(product.getAmount() + amount);
     Product saved = productService.save(product);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     publisher.publishEvent(new ProductMovimentEvent(saved, ((UserDetailsAdapter) auth.getPrincipal()).getUser(), product.getAmount(), oldAmount, amount,true));
-    return productMapper.toProductGetDTO(saved);
+    return productMapper.toDto(saved);
   }
 
   @Transactional
-  public ProductGetDTO decrementProductAmount(Long id, Integer amount){
+  public ProductDTO decrementProductAmount(Long id, Integer amount){
     Product product = productService.findById(id);
     if(product.getAmount() < amount){throw new UnauthorizedException("Quantidade para retirada invalida ou acima do limite");}
     Integer oldAmount = product.getAmount();
@@ -90,7 +86,7 @@ public class ProductManagerService {
     Product saved = productService.save(product);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     publisher.publishEvent(new ProductMovimentEvent(saved, ((UserDetailsAdapter) auth.getPrincipal()).getUser(), product.getAmount(), oldAmount, amount,false));
-    return productMapper.toProductGetDTO(saved);
+    return productMapper.toDto(saved);
   }
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -9,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.industock.industrial_stock.dto.expense.ExpenseGetDTO;
-import space.industock.industrial_stock.dto.expense.ExpensePostDTO;
+import space.industock.industrial_stock.dto.ExpenseDTO;
 import space.industock.industrial_stock.enums.ExpenseType;
 import space.industock.industrial_stock.service.ExpenseServiceManager;
 
@@ -28,14 +27,14 @@ public class ExpenseController {
 
   @PostMapping
   @PreAuthorize("hasAuthority('ADD_EXPENSE')")
-  public ResponseEntity<ExpenseGetDTO> save(@RequestBody @Valid ExpensePostDTO expensePostDTO){
-    return new ResponseEntity<>(expenseServiceManager.save(expensePostDTO), HttpStatus.CREATED);
+  public ResponseEntity<ExpenseDTO> save(@RequestBody @Valid ExpenseDTO expenseDTO){
+    return new ResponseEntity<>(expenseServiceManager.save(expenseDTO), HttpStatus.CREATED);
   }
 
   @GetMapping
   @PreAuthorize("hasAuthority('EXPENSE_DASHBOARD')")
-  public ResponseEntity<List<ExpenseGetDTO>> findByMonth(@RequestParam(required = true) @Min(2025) int year, @RequestParam(required = true) @Min(1) @Max(12) int month,@RequestParam(required = false) ExpenseType type){
-    return ResponseEntity.ok(expenseServiceManager.findAllByYearMonthAndType(YearMonth.of(year,month), type));
+  public ResponseEntity<List<ExpenseDTO>> findByMonth(@RequestParam(required = true) @Min(2025) int year, @RequestParam(required = true) @Min(1) @Max(12) int month){
+    return ResponseEntity.ok(expenseServiceManager.findAllByYearMonth(YearMonth.of(year,month)));
   }
 
 

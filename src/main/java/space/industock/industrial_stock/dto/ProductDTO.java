@@ -1,5 +1,6 @@
-package space.industock.industrial_stock.dto.product;
+package space.industock.industrial_stock.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductPostDTO {
+public class ProductDTO {
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private Long id;
 
   @NotEmpty(message = "O nome não pode estar em branco.")
   @Size(min = 3, message = "O nome precisa conter no minimo 3 caracteres.")

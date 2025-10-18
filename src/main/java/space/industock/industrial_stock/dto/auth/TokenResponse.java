@@ -3,7 +3,7 @@ package space.industock.industrial_stock.dto.auth;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import space.industock.industrial_stock.dto.user.UserGetDTO;
+import space.industock.industrial_stock.dto.UserDTO;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,6 +11,6 @@ import space.industock.industrial_stock.dto.user.UserGetDTO;
 public class TokenResponse {
 
   private String token;
-  private UserGetDTO user;
+  private UserDTO user;
 
 }

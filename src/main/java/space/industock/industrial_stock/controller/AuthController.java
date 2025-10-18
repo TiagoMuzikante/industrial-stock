@@ -12,10 +12,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.industock.industrial_stock.domain.User;
 import space.industock.industrial_stock.domain.utils.UserDetailsAdapter;
+import space.industock.industrial_stock.dto.UserDTO;
 import space.industock.industrial_stock.dto.auth.CurrentUser;
 import space.industock.industrial_stock.dto.auth.LoginRequest;
 import space.industock.industrial_stock.dto.auth.TokenResponse;
-import space.industock.industrial_stock.dto.user.UserGetDTO;
 import space.industock.industrial_stock.mapper.UserMapper;
 import space.industock.industrial_stock.repository.RoleRepository;
 import space.industock.industrial_stock.repository.UserRepository;
@@ -69,7 +69,7 @@ public class AuthController {
     }
 
     UserDetailsAdapter authUser = (UserDetailsAdapter) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    UserGetDTO user = userMapper.toUserGetDTO(authUser.getUser());
+    UserDTO user = userMapper.toDto(authUser.getUser());
 
     return ResponseEntity.ok(new CurrentUser(jwtUtil.isTokenExpired(token.substring(7)), authUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList(), user));
   }

@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.ProductHistoric;
 import space.industock.industrial_stock.repository.ProductHistoricRepository;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ProductHistoricService {

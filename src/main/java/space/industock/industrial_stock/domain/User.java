@@ -1,10 +1,8 @@
 package space.industock.industrial_stock.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,15 +24,16 @@ public class User {
   @Column(nullable = false, unique = true)
   private String name;
   private String password;
-  private Boolean restartPassword = false;
+  private Boolean restartPassword = true;
 
   // auth
-  private Boolean isEnable;
-  private Boolean isAccountNonLocked;
-  private Boolean isAccountNonExpired;
-  private Boolean isCredentialsNonExpired;
+  private Boolean isEnable = true;
+  private Boolean isAccountNonLocked = true;
+  private Boolean isAccountNonExpired = true;
+  private Boolean isCredentialsNonExpired = true;
 
   @OneToMany(mappedBy = "user")
+  @ToString.Exclude
   private List<ProductHistoric> productHistorics;
 
   @ManyToOne(fetch = FetchType.EAGER)

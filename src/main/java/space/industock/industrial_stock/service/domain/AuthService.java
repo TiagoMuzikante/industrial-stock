@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.User;
+import space.industock.industrial_stock.dto.UserDTO;
 import space.industock.industrial_stock.dto.auth.LoginRequest;
 import space.industock.industrial_stock.dto.auth.TokenResponse;
-import space.industock.industrial_stock.dto.user.UserGetDTO;
 import space.industock.industrial_stock.exception.UnauthorizedException;
 import space.industock.industrial_stock.mapper.UserMapper;
 import space.industock.industrial_stock.repository.UserRepository;
@@ -46,11 +46,11 @@ public class AuthService {
     }
 
     String token = jwtUtil.generateToken(user.getId());
-    return new TokenResponse(token, userMapper.toUserGetDTO(user));
+    return new TokenResponse(token, userMapper.toDto(user));
   }
 
-  public UserGetDTO findById(String id){
-    return userMapper.toUserGetDTO(userService.findById(UUID.fromString(id)));
+  public UserDTO findById(String id){
+    return userMapper.toDto(userService.findById(UUID.fromString(id)));
   }
 
 }

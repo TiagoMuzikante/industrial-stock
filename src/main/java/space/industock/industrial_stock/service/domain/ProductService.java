@@ -3,7 +3,6 @@ package space.industock.industrial_stock.service.domain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.Product;
-import space.industock.industrial_stock.dto.product.ProductPostDTO;
 import space.industock.industrial_stock.exception.UnauthorizedException;
 import space.industock.industrial_stock.mapper.ProductMapper;
 import space.industock.industrial_stock.repository.ProductRepository;
