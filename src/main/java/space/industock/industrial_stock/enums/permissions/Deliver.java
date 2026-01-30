@@ -1,0 +1,14 @@
+package space.industock.industrial_stock.enums.permissions;
+
+public enum Deliver {
+  DELIVER,
+  GEO_USE,
+  QUEUE_LIST,
+  CONFIRM_NEXT,
+  SERVICE_PICTURES,
+  PRODUCTION_PICTURES,
+  DELIVER_PICTURES,
+  CONFIRM_DELIVER,
+  DELIVERY_PENDING,
+  COLLECT_PENDING
+}

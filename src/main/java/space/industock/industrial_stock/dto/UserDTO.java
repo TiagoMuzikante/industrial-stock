@@ -1,23 +1,36 @@
 package space.industock.industrial_stock.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import space.industock.industrial_stock.domain.Role;
 import space.industock.industrial_stock.enums.RoleEnum;
 
 import java.util.List;
-import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class UserDTO {
 
-  private UUID id;
+  private Long id;
+
+  @NotBlank(message = "O nome não pode estar em branco.")
   private String name;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private Role role;
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private String accessLevel;
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private boolean isEnable = true;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private List<RoleEnum> authorities;

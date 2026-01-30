@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import space.industock.industrial_stock.domain.Permission;
 import space.industock.industrial_stock.domain.Role;
 import space.industock.industrial_stock.enums.RoleEnum;
+import space.industock.industrial_stock.enums.permissions.Deliver;
 import space.industock.industrial_stock.enums.permissions.Manager;
 import space.industock.industrial_stock.enums.permissions.Owner;
 import space.industock.industrial_stock.enums.permissions.Worker;
@@ -30,6 +31,7 @@ public class HierarchyInitializer implements CommandLineRunner {
     // Map que associa cada RoleEnum a um enum de permissões
     Map<RoleEnum, Class<? extends Enum<?>>> roleReferences = Map.of(
       RoleEnum.WORKER, Worker.class,
+      RoleEnum.DELIVER, Deliver.class,
       RoleEnum.MANAGER, Manager.class,
       RoleEnum.OWNER, Owner.class
     );
@@ -56,18 +58,24 @@ public class HierarchyInitializer implements CommandLineRunner {
       roleMap.put(re, role);
     }
 
-    // Atualizar hierarquia (cada role herda a anterior na ordem do enum)
-    Role previousRole = null;
-    for (RoleEnum re : RoleEnum.values()) {
-      Role currentRole = roleMap.get(re);
+    // Limpa hierarquia antiga em memória
+    roleMap.values().forEach(role -> role.getChildren().clear());
 
-      if (previousRole != null && !currentRole.getChildren().contains(previousRole)) {
-        currentRole.getChildren().add(previousRole);
-        roleRepository.save(currentRole);
-      }
+    Role owner   = roleMap.get(RoleEnum.OWNER);
+    Role manager = roleMap.get(RoleEnum.MANAGER);
+    Role worker  = roleMap.get(RoleEnum.WORKER);
+    Role deliver = roleMap.get(RoleEnum.DELIVER);
 
-      previousRole = currentRole;
-    }
+// OWNER > MANAGER > WORKER
+    owner.getChildren().add(manager);
+    manager.getChildren().add(worker);
+
+// OWNER > DELIVER (DELIVER isolado)
+    owner.getChildren().add(deliver);
+
+    roleRepository.save(owner);
+    roleRepository.save(manager);
+
 
     //System.out.println("Roles, permissões e hierarquia inicializadas/atualizadas com sucesso!");
   }

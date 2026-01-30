@@ -1,13 +1,10 @@
 package space.industock.industrial_stock.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import space.industock.industrial_stock.domain.User;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepository extends BaseRepository<User, Long> {
 
   Optional<User> findByName(String name);
 

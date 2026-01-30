@@ -51,8 +51,9 @@ public class BeansProvider {
     RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
 
     hierarchy.setHierarchy(
+        "ROLE_OWNER > ROLE_DELIVER\n" +
         "ROLE_OWNER > ROLE_MANAGER\n" +
-            "ROLE_MANAGER > ROLE_WORKER"
+        "ROLE_MANAGER > ROLE_WORKER"
     );
     return hierarchy;
   }

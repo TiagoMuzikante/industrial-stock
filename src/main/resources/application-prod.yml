@@ -4,6 +4,12 @@ spring:
     url: ${DATABASE_URL}?createDatabaseIfNotExist=true
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+minio:
+  url: ${MINIO_URL}
+  access-key: ${MINIO_USER}
+  secret-key: ${MINIO_PASSWORD}
+  bucket: ${MINIO_BUCKET}
 jwt:
   secretLogin: ${SECRET_AUTHENTICATION}
   secretClient:  ${CLIENT_SECRET}
+  secretTokenOpenRouteService: ${OPENROUTESERVICETOKEN}

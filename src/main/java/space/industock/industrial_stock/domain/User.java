@@ -1,48 +1,54 @@
 package space.industock.industrial_stock.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @Table(name = "app_user")
-public class User {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+@EqualsAndHashCode(callSuper = true)
+public class User extends BaseEntity {
 
   @Column(nullable = false, unique = true)
   private String name;
   private String password;
-  private Boolean restartPassword = true;
+  private boolean restartPassword = true;
+
+  @ToString.Exclude
+  @OneToMany(mappedBy = "currentUser")
+  private List<ServiceOrder> currentServices;
 
   // auth
-  private Boolean isEnable = true;
-  private Boolean isAccountNonLocked = true;
-  private Boolean isAccountNonExpired = true;
-  private Boolean isCredentialsNonExpired = true;
+  private boolean isEnable = true;
+  private boolean isAccountNonLocked = true;
+  private boolean isAccountNonExpired = true;
+  private boolean isCredentialsNonExpired = true;
 
   @OneToMany(mappedBy = "user")
   @ToString.Exclude
+  @JsonIgnore
   private List<ProductHistoric> productHistorics;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "role_id")
   private Role role;
 
-  public List<ProductHistoric> getProductHistoricsBetweenDates(LocalDate startDate, LocalDate endDate){
-    return productHistorics.stream()
-        .filter(historic -> (!historic.getDateTime().toLocalDate().isBefore(startDate) && !historic.getDateTime().toLocalDate().isAfter(endDate)))
-        .collect(Collectors.toList());
+  //registro de etapas
+
+//  @ToString.Exclude
+//  @JsonIgnore
+//  @OneToMany(mappedBy = "productorUser")
+//  List<ServiceOrder> productedServices;
+
+  public String getAccessLevel(){
+    return role.getName();
   }
+
 }

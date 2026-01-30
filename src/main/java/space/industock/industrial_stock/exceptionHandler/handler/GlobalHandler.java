@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import space.industock.industrial_stock.exception.GeoCodeNotValidException;
 import space.industock.industrial_stock.exceptionHandler.response.ErrorResponse;
 import space.industock.industrial_stock.exceptionHandler.response.ValidationErrorResponse;
 
@@ -18,6 +19,11 @@ public class GlobalHandler {
   @ExceptionHandler(NoHandlerFoundException.class)
   public ResponseEntity<ErrorResponse> handlerNotFound(NoHandlerFoundException ex){
     return new ResponseEntity<>(new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Rota não encontrada.", ex.getRequestURL()), HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(GeoCodeNotValidException.class)
+  public ResponseEntity<ErrorResponse> geoCodeNotValidException(GeoCodeNotValidException ex){
+    return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

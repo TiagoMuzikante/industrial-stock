@@ -16,19 +16,19 @@ public class UserDetailsAdapter implements UserDetails {
   private Set<SimpleGrantedAuthority> authorities;
 
   public boolean isAccountNonExpired() {
-    return user.getIsAccountNonExpired();
+    return user.isAccountNonExpired();
   }
 
   public boolean isAccountNonLocked() {
-    return user.getIsAccountNonLocked();
+    return user.isAccountNonLocked();
   }
 
   public boolean isCredentialsNonExpired() {
-    return user.getIsCredentialsNonExpired();
+    return user.isCredentialsNonExpired();
   }
 
   public boolean isEnabled() {
-    return user.getIsEnable();
+    return user.isEnable();
   }
 
   @Override

@@ -1,28 +1,21 @@
 package space.industock.industrial_stock.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime;
-
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductHistoric {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+@EqualsAndHashCode(callSuper = true)
+@ToString(exclude = {"product", "user"})
+public class ProductHistoric extends BaseEntity{
 
   private Integer amount;
   private Integer oldAmount;
   private Integer changedAmount;
-  private LocalDateTime dateTime;
   private Boolean isIncoming;
 
   @ManyToOne

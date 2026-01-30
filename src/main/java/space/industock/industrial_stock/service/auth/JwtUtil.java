@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -30,11 +29,11 @@ public class JwtUtil {
         .getBody();
   }
 
-  public String generateToken(UUID userId){
+  public String generateToken(Long userId){
     return Jwts.builder()
         .setSubject(userId.toString())
         .setIssuedAt(new Date())
-        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 4)) // 1 hora
         .signWith(SignatureAlgorithm.HS256, getSecret())
         .compact();
   }

@@ -1,13 +1,12 @@
 package space.industock.industrial_stock.dto.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import space.industock.industrial_stock.dto.UserDTO;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class TokenResponse {
 
   private String token;

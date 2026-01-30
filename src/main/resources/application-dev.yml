@@ -4,6 +4,18 @@ spring:
     url: jdbc:postgresql://localhost:4740/springenv?createDatabaseIfNotExist=true
     username: springuser
     password: losted49
+  jpa:
+    hibernate:
+      ddl-auto: update
+minio:
+  url: http://localhost:9000
+  access-key: admin
+  secret-key: admin123
+  bucket: service-images
+
 jwt:
   secretLogin: G2W6KL84+FfD1JkghVlwqC8Hr+q1V3w1uGSvSMKvPRM=
   secretClient: xY4PBmjL7Eu7eA2HT8qLuOTrh9W0CKwPtmk8qRJZ+R0=
+  secretTokenOpenCage: cec77aee574e4271a3c425da613dc692
+  secretTokenOpenRouteService: eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImI3NTNlYzEwMDY2YjQxMTRiNDg2NmVhMTM0ODIxNzJhIiwiaCI6Im11cm11cjY0In0= # minha
+  #secretTokenOpenRouteService: eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1MGE5Zjg2MWE0NTRkMzc4NTM4MTJiMDFmOTI3YTZkIiwiaCI6Im11cm11cjY0In0= # prod

@@ -8,12 +8,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.User;
 import space.industock.industrial_stock.domain.utils.UserDetailsAdapter;
-import space.industock.industrial_stock.service.domain.PermissionService;
-import space.industock.industrial_stock.service.domain.UserService;
+import space.industock.industrial_stock.service.PermissionService;
+import space.industock.industrial_stock.service.UserService;
 
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,8 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-    //return new UserDetailsAdapter(userService.findById(UUID.fromString(id)));
-    User user = userService.findById(UUID.fromString(id));
+    User user = userService.findById(Long.parseLong(id));
 
     Set<String> permissions = permissionService.collectAllPermissions(user.getRole());
 

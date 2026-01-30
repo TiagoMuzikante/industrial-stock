@@ -1,5 +1,13 @@
 package space.industock.industrial_stock.enums.permissions;
 
 public enum Worker {
-  REMOVE_STOCK
+  CURRENT_PRODUCTION,
+  PRODUCTION_PENDING,
+  REMOVE_STOCK,
+  QUEUE_LIST,
+  CONFIRM_NEXT,
+  CONFIRM_PRODUCTION,
+  SERVICE_PICTURES,
+  PRODUCTION_PICTURES,
+  NEXT_PRODUCTION
 }
