@@ -33,7 +33,6 @@ public class ClientDTO {
   @NotBlank(message = "O contato nao pode permanecer em branco.")
   private String phoneNumber;
 
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private List<ServiceOrderDTO> services;
 
   private PaymentType paymentType;

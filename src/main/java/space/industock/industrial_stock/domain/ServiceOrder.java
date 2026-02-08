@@ -19,8 +19,6 @@ public class ServiceOrder extends BaseEntity{
 
   private String model;
   private Integer valueInCents = 0;
-  private boolean needWeld = false;
-  private boolean needPaint = false;
   private boolean finished = false;
   private Integer multiplier = 1;
 
@@ -56,8 +54,8 @@ public class ServiceOrder extends BaseEntity{
 
   //registro de etapas
 
-//  @ManyToOne
-//  @JoinColumn(name = "productor_user_id")
-//  private User productorUser;
+  @ManyToOne
+  @JoinColumn(name = "productor_user_id")
+  private User productedByUser;
 
 }

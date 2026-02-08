@@ -42,10 +42,10 @@ public class User extends BaseEntity {
 
   //registro de etapas
 
-//  @ToString.Exclude
-//  @JsonIgnore
-//  @OneToMany(mappedBy = "productorUser")
-//  List<ServiceOrder> productedServices;
+  @ToString.Exclude
+  @JsonIgnore
+  @OneToMany(mappedBy = "productedByUser")
+  List<ServiceOrder> productedServices;
 
   public String getAccessLevel(){
     return role.getName();

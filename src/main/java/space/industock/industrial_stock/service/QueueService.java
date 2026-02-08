@@ -148,10 +148,9 @@ public class QueueService {
     order.setStage(newStage);
 
     //definição do atuador
-//    switch (oldStage){
-//      case EM_PRODUCAO -> order.setProductorUser(this.getCurrentUser());
-//      case PENDENTE_ENTREGA -> order.setDeliverUser(this.getCurrentUser());
-//    }
+    if(oldStage == Stage.EM_PRODUCAO){
+      order.setProductedByUser(this.getCurrentUser());
+    }
 
     orderRepo.save(order);
     enqueue(order.getClient(), order.getStage());

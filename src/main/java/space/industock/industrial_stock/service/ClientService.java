@@ -1,16 +1,14 @@
 package space.industock.industrial_stock.service;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import space.industock.industrial_stock.domain.Client;
 import space.industock.industrial_stock.domain.ServiceOrder;
-import space.industock.industrial_stock.dto.ClientDTO;
-import space.industock.industrial_stock.dto.ClientSimpleDTO;
-import space.industock.industrial_stock.enums.Stage;
-import space.industock.industrial_stock.event.EnqueueClientServiceEvent;
+import space.industock.industrial_stock.domain.ServicePicture;
+import space.industock.industrial_stock.dto.*;
+import space.industock.industrial_stock.enums.PictureType;
 import space.industock.industrial_stock.repository.ClientRepository;
+import space.industock.industrial_stock.repository.ServicePictureRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,12 +17,12 @@ import java.util.List;
 public class ClientService extends BaseService<Client, ClientDTO> {
 
   private final ClientRepository repository;
-  private final ApplicationEventPublisher publisher;
+  private final ServicePictureRepository pictureRepository;
 
-  public ClientService(ClientRepository repository, ApplicationEventPublisher publisher) {
+  public ClientService(ClientRepository repository, ServicePictureRepository pictureRepository) {
     super(repository);
     this.repository = repository;
-    this.publisher = publisher;
+    this.pictureRepository = pictureRepository;
   }
 
   public List<ClientSimpleDTO> findAllSimple(){
@@ -52,12 +50,31 @@ public class ClientService extends BaseService<Client, ClientDTO> {
     return toSimpleDTO(repository.save(entity));
   }
 
+  public ClientDTO replace(Long id, ClientDTO dto){
+    Client client = super.findById(id);
+    client.setName(dto.getName());
+    client.setAddress(dto.getAddress());
+    client.setPhoneNumber(dto.getPhoneNumber());
+    client.setPaymentType(dto.getPaymentType());
+    client.setPayment(dto.isPayment());
+    client.setPaymentTimes(dto.getPaymentTimes());
+    client.setPaymentValueInCents(dto.getPaymentValueInCents());
+
+    return toDto(repository.save(client));
+  }
+
+  public ClientDTO replaceWithService(Long id, ClientDTO dto){
+
+    return null;
+
+  }
+
+
   @Override
   public ClientDTO save(ClientDTO clientDTO) {
     Client client = super.toEntity(clientDTO);
 
     Client saved = repository.save(client);
-    publisher.publishEvent(new EnqueueClientServiceEvent(saved, clientDTO.getStage()));
     ClientDTO dto = super.toDto(saved);
     return dto;
   }
@@ -73,5 +90,26 @@ public class ClientService extends BaseService<Client, ClientDTO> {
     BeanUtils.copyProperties(client, dto);
     return dto;
   }
+
+  public ClientDTO findClientById(Long id){
+
+    Client client = super.findById(id);
+    ClientDTO clientDTO = super.toDto(client);
+    clientDTO.setServices(client.getServices().stream().map(this::toServiceOrderDTO).toList());
+
+    return clientDTO;
+  }
+
+  public ServiceOrderDTO toServiceOrderDTO(ServiceOrder entity) {
+    ServiceOrderDTO serviceOrderDTO = super.toDto(entity, ServiceOrderDTO.class);
+    serviceOrderDTO.setPictures(pictureRepository.findByServiceOrder_IdAndType(entity.getId(), PictureType.INITIAL).stream().map(ServicePicture::getId).toList());
+    serviceOrderDTO.setConfirmProductionPictures(pictureRepository.findByServiceOrder_IdAndType(entity.getId(), PictureType.CONFIRM_PRODUCTION).stream().map(ServicePicture::getId).toList());
+    serviceOrderDTO.setConfirmDeliverPictures(pictureRepository.findByServiceOrder_IdAndType(entity.getId(), PictureType.CONFIRM_DELIVER).stream().map(ServicePicture::getId).toList());
+    serviceOrderDTO.setCurrentUser(entity.getCurrentUser() != null ? (super.toDto(entity.getCurrentUser(), UserDTO.class)) : null);
+    serviceOrderDTO.setProductedByUser(entity.getProductedByUser() != null ? (super.toDto(entity.getProductedByUser(), UserDTO.class)) : null);
+    serviceOrderDTO.setMateriais(entity.getMaterials().stream().map(aux -> BaseService.toDto(aux, ProductDTO.class)).toList());
+    return serviceOrderDTO;
+  }
+
 
 }

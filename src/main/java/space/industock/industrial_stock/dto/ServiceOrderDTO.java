@@ -58,6 +58,13 @@ public class ServiceOrderDTO {
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private Client client;
 
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private UserDTO productedByUser;
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  private UserDTO currentUser;
+
+
   private Integer multiplier;
 
 }

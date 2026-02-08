@@ -22,6 +22,12 @@ public class ClientController extends BaseController<ClientDTO> {
     this.service = service;
   }
 
+  @GetMapping("/show/{id}")
+  @PreAuthorize("hasAuthority('CLIENT_VIEW')")
+  public ResponseEntity<ClientDTO> findClientById(@PathVariable Long id){
+    return ResponseEntity.ok(service.findClientById(id));
+  }
+
   @PreAuthorize("hasAuthority('CLIENT_MANAGER')")
   @PostMapping("/simple")
   public ResponseEntity<ClientSimpleDTO> save(@RequestBody @Valid ClientSimpleDTO ClientDto){
@@ -46,11 +52,24 @@ public class ClientController extends BaseController<ClientDTO> {
     return ResponseEntity.ok(service.update(dto, id));
   }
 
+  @PutMapping("/{id}")
+  @Override
+  public ResponseEntity<ClientDTO> replace(@PathVariable Long id, @RequestBody @Valid ClientDTO dto){
+    return ResponseEntity.ok(service.replace(id, dto));
+  }
+
+  @PutMapping("/{id}/service/")
+  public ResponseEntity<ClientDTO> replaceWithService(@PathVariable Long id, @RequestBody ClientDTO dto){
+    return ResponseEntity.ok(service.replaceWithService(id, dto));
+  }
+
   @PreAuthorize("hasAuthority('CLIENT_MANAGER')")
   @PatchMapping("/finish/{id}")
   public ResponseEntity<Void> finish(@PathVariable Long id){
     service.finishClient(id);
     return ResponseEntity.noContent().build();
   }
+
+
 
 }

@@ -47,7 +47,6 @@ public class ServiceOrderService extends BaseService<ServiceOrder, ServiceOrderD
   @Override
   public ServiceOrderDTO save(ServiceOrderDTO dto){
     ServiceOrder toSave = toEntity(dto);
-    log.info(toSave.getStage());
     ServiceOrder saved = repository.save(toSave);
 
     publisher.publishEvent(new EnqueueClientServiceEvent(saved.getClient(), Stage.PENDENTE_PRODUCAO));

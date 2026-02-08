@@ -1,6 +1,7 @@
 package space.industock.industrial_stock.enums;
 
 public enum Stage {
+  PENDENTE_COLETA,
   PENDENTE_PRODUCAO,
   EM_PRODUCAO,
   PENDENTE_ENTREGA,
