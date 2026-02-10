@@ -15,6 +15,7 @@ import space.industock.industrial_stock.dto.ServiceOrderDTO;
 import space.industock.industrial_stock.dto.routes.LngLat;
 import space.industock.industrial_stock.enums.PictureType;
 import space.industock.industrial_stock.enums.Stage;
+import space.industock.industrial_stock.event.CommitServicePicturesEvent;
 import space.industock.industrial_stock.event.EnqueueClientServiceEvent;
 import space.industock.industrial_stock.event.NextQueueServiceEvent;
 import space.industock.industrial_stock.exception.InternalAuthorizedException;
@@ -24,6 +25,7 @@ import space.industock.industrial_stock.repository.UserRepository;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Log4j2
@@ -46,18 +48,22 @@ public class ServiceOrderService extends BaseService<ServiceOrder, ServiceOrderD
 
   @Override
   public ServiceOrderDTO save(ServiceOrderDTO dto){
+    ServiceOrder serviceOrder = this.saveToEntity(dto);
+    return toDto(serviceOrder);
+  }
+
+  public ServiceOrder saveToEntity(ServiceOrderDTO dto){
     ServiceOrder toSave = toEntity(dto);
     ServiceOrder saved = repository.save(toSave);
 
     publisher.publishEvent(new EnqueueClientServiceEvent(saved.getClient(), Stage.PENDENTE_PRODUCAO));
-
-    return toDto(saved);
+    return saved;
   }
 
   /* ============================================================
    * FINALIZA PRODUÇÃO
    * ============================================================ */
-  public ServiceOrderDTO finishProduction(Long serviceId){
+  public ServiceOrderDTO finishProduction(Long serviceId, UUID sessionId){
     ServiceOrder service = repository.findById(serviceId).orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
     User user = this.getCurrentUser();
@@ -65,6 +71,7 @@ public class ServiceOrderService extends BaseService<ServiceOrder, ServiceOrderD
 
     service.setCurrentUser(null);
 
+    publisher.publishEvent(new CommitServicePicturesEvent(sessionId, PictureType.CONFIRM_PRODUCTION, service));
     publisher.publishEvent(new NextQueueServiceEvent(service));
 
     return toDto(service);
@@ -74,11 +81,12 @@ public class ServiceOrderService extends BaseService<ServiceOrder, ServiceOrderD
    * FINALIZA ENTREGA
    * ============================================================ */
   @Transactional
-  public ServiceOrderDTO finishDelivered(Long serviceId, LngLat lngLat){
+  public ServiceOrderDTO finishDelivered(Long serviceId, LngLat lngLat, UUID sessionId){
     User user = this.getCurrentUser();
     ServiceOrder service = repository.findById(serviceId).orElseThrow(() -> new InternalAuthorizedException("Serviço não encontrado"));
     service.setDeliveredLocation(lngLat);
 
+    publisher.publishEvent(new CommitServicePicturesEvent(sessionId, PictureType.CONFIRM_DELIVER, service));
     publisher.publishEvent(new NextQueueServiceEvent(service));
 
     return toDto(service);

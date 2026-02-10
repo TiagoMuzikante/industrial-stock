@@ -2,9 +2,7 @@ package space.industock.industrial_stock.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import space.industock.industrial_stock.enums.PictureType;
 
 @Entity
@@ -18,6 +16,8 @@ public class ServicePicture {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @EqualsAndHashCode.Include
   private Long id;
+
+  private String checksum;
 
   @Column(nullable = false, unique = true)
   private String objectName;

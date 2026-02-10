@@ -64,6 +64,7 @@ public class ServiceOrderDTO {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private UserDTO currentUser;
 
+  private String localId;
 
   private Integer multiplier;
 

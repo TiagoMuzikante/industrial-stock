@@ -38,3 +38,7 @@ logging:
       transaction: TRACE
       beans:
         factory: DEBUG
+storage:
+  basePath: /var/uploads
+upload:
+  sessionTtlHours: 24

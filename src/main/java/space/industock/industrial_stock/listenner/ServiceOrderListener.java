@@ -1,11 +1,21 @@
 package space.industock.industrial_stock.listenner;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import space.industock.industrial_stock.event.CommitServicePicturesEvent;
+import space.industock.industrial_stock.service.session.commit.ServiceOrderCommit;
 
 @Component
 @RequiredArgsConstructor
 public class ServiceOrderListener {
+
+  private final ServiceOrderCommit serviceOrderCommit;
+
+  @EventListener
+  public void servicePictureCommit(CommitServicePicturesEvent event){
+    serviceOrderCommit.commitService(event.sessionId(), event.pictureType(), event.serviceOrder());
+  }
 
 //  @EventListener
 //  public void handleHistory(ServiceOrderHistoryEvent event) {

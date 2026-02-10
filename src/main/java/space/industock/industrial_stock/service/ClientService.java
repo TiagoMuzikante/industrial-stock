@@ -69,14 +69,14 @@ public class ClientService extends BaseService<Client, ClientDTO> {
 
   }
 
+  public Client saveToEntity(ClientDTO dto){
+    Client client = super.toEntity(dto);
+    return repository.save(client);
+  }
 
   @Override
   public ClientDTO save(ClientDTO clientDTO) {
-    Client client = super.toEntity(clientDTO);
-
-    Client saved = repository.save(client);
-    ClientDTO dto = super.toDto(saved);
-    return dto;
+    return super.toDto(this.saveToEntity(clientDTO));
   }
 
   public Client toEntity(ClientSimpleDTO dto) {
