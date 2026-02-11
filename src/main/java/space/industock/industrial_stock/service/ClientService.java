@@ -1,12 +1,16 @@
 package space.industock.industrial_stock.service;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import space.industock.industrial_stock.domain.Client;
 import space.industock.industrial_stock.domain.ServiceOrder;
 import space.industock.industrial_stock.domain.ServicePicture;
 import space.industock.industrial_stock.dto.*;
 import space.industock.industrial_stock.enums.PictureType;
+import space.industock.industrial_stock.enums.Stage;
+import space.industock.industrial_stock.event.EnqueueClientServiceEvent;
 import space.industock.industrial_stock.repository.ClientRepository;
 import space.industock.industrial_stock.repository.ServicePictureRepository;
 
@@ -18,11 +22,13 @@ public class ClientService extends BaseService<Client, ClientDTO> {
 
   private final ClientRepository repository;
   private final ServicePictureRepository pictureRepository;
+  private final ApplicationEventPublisher publisher;
 
-  public ClientService(ClientRepository repository, ServicePictureRepository pictureRepository) {
+  public ClientService(ClientRepository repository, ServicePictureRepository pictureRepository, ApplicationEventPublisher publisher) {
     super(repository);
     this.repository = repository;
     this.pictureRepository = pictureRepository;
+    this.publisher = publisher;
   }
 
   public List<ClientSimpleDTO> findAllSimple(){
@@ -39,9 +45,13 @@ public class ClientService extends BaseService<Client, ClientDTO> {
     return toSimpleDTO(super.findById(id));
   }
 
-  public ClientSimpleDTO save(ClientSimpleDTO dto){
-    Client entity = toEntity(dto);
-    return toSimpleDTO(repository.save(entity));
+  @Transactional
+  public ClientSimpleDTO save(ClientSimpleDTO dto, boolean enqueue){
+    Client client = repository.save(toEntity(dto));
+    if(enqueue){
+      publisher.publishEvent(new EnqueueClientServiceEvent(client, Stage.PENDENTE_COLETA));
+    }
+    return toSimpleDTO(client);
   }
 
   public ClientSimpleDTO update(ClientSimpleDTO dto, Long id){

@@ -19,7 +19,6 @@ import java.util.List;
 @Builder
 public class ClientDTO {
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long id;
 
   @NotEmpty(message = "O nome precisa ser preenchido.")

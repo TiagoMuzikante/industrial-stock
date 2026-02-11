@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 public class ClientSimpleDTO {
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Long id;
 
   @NotBlank(message = "O nome precisa ser preenchido.")

@@ -28,10 +28,15 @@ public class ClientController extends BaseController<ClientDTO> {
     return ResponseEntity.ok(service.findClientById(id));
   }
 
+  @PostMapping("/before")
+  public ResponseEntity<ClientSimpleDTO> saveBeforeCollect(@RequestBody @Valid ClientSimpleDTO clientDto){
+    return new ResponseEntity<>(service.save(clientDto, true), HttpStatus.CREATED);
+  }
+
   @PreAuthorize("hasAuthority('CLIENT_MANAGER')")
   @PostMapping("/simple")
-  public ResponseEntity<ClientSimpleDTO> save(@RequestBody @Valid ClientSimpleDTO ClientDto){
-    return new ResponseEntity<>(service.save(ClientDto), HttpStatus.CREATED);
+  public ResponseEntity<ClientSimpleDTO> save(@RequestBody @Valid ClientSimpleDTO clientDto){
+    return new ResponseEntity<>(service.save(clientDto, false), HttpStatus.CREATED);
   }
 
   @PreAuthorize("hasAuthority('CLIENT_MANAGER')")

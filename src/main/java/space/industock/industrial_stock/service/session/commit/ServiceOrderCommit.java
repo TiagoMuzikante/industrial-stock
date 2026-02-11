@@ -1,5 +1,6 @@
 package space.industock.industrial_stock.service.session.commit;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import space.industock.industrial_stock.domain.Client;
@@ -12,7 +13,9 @@ import space.industock.industrial_stock.dto.ServiceOrderDTO;
 import space.industock.industrial_stock.dto.session.CommitResponse;
 import space.industock.industrial_stock.dto.session.PictureMapping;
 import space.industock.industrial_stock.enums.PictureType;
+import space.industock.industrial_stock.enums.Stage;
 import space.industock.industrial_stock.enums.UploadSessionState;
+import space.industock.industrial_stock.event.RemoveClientFromEnqueueEvent;
 import space.industock.industrial_stock.infra.JsonMapper;
 import space.industock.industrial_stock.repository.ServicePictureRepository;
 import space.industock.industrial_stock.repository.session.UploadSessionRepository;
@@ -26,18 +29,20 @@ import java.util.stream.Collectors;
 @Service
 public class ServiceOrderCommit {
 
-  private final UploadSessionRepository sessionRepository;
   private final ClientService clientService;
   private final ServiceOrderService serviceOrderService;
-  private final ServicePictureRepository servicePictureRepository;
   private final CommitSession commitSession;
+  private final ServicePictureRepository servicePictureRepository;
+  private final UploadSessionRepository sessionRepository;
+  private final ApplicationEventPublisher publisher;
 
-  public ServiceOrderCommit(UploadSessionRepository sessionRepository, ClientService clientService, ServiceOrderService serviceOrderService, ServicePictureRepository servicePictureRepository, CommitSession commitSession) {
+  public ServiceOrderCommit(UploadSessionRepository sessionRepository, ClientService clientService, ServiceOrderService serviceOrderService, ServicePictureRepository servicePictureRepository, CommitSession commitSession, ApplicationEventPublisher publisher) {
     this.sessionRepository = sessionRepository;
     this.clientService = clientService;
     this.serviceOrderService = serviceOrderService;
     this.servicePictureRepository = servicePictureRepository;
     this.commitSession = commitSession;
+    this.publisher = publisher;
   }
 
   @Transactional
@@ -138,5 +143,7 @@ public class ServiceOrderCommit {
 
       servicePictureRepository.save(picture);
     }
+
+    publisher.publishEvent(new RemoveClientFromEnqueueEvent(client.getId(), Stage.PENDENTE_COLETA));
   }
 }

@@ -166,14 +166,20 @@ public class QueueService {
 
     if (othersServices.isEmpty()) {
       // remover cliente do stage antigo
-      Optional<QueueItem> qi = queueRepo.findByClientIdAndStage(clientId, oldStage);
-      if (qi.isPresent()) {
-        removeFromBlock(qi.get().getId());
-        queueRepo.delete(qi.get());
-      }
+      removeFromClientOldQueue(clientId, oldStage);
     }
   }
 
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public boolean removeFromClientOldQueue(Long clientId, Stage stage){
+    Optional<QueueItem> qi = queueRepo.findByClientIdAndStage(clientId, stage);
+    if (qi.isPresent()) {
+      removeFromBlock(qi.get().getId());
+      queueRepo.deleteById(qi.get().getId());
+      return true;
+    }
+    return false;
+  }
 
   /* ============================================================
    * ADD TO BLOCK

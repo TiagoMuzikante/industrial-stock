@@ -7,6 +7,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import space.industock.industrial_stock.event.EnqueueClientServiceEvent;
 import space.industock.industrial_stock.event.NextQueueServiceEvent;
+import space.industock.industrial_stock.event.RemoveClientFromEnqueueEvent;
 import space.industock.industrial_stock.service.QueueService;
 
 @Component
@@ -23,6 +24,11 @@ public class QueueListener {
   @EventListener
   public void nextQueueStage(NextQueueServiceEvent event){
     service.moveToNextStage(event.serviceOrder());
+  }
+
+  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+  public void removeClientFromOldStage(RemoveClientFromEnqueueEvent event){
+    service.removeFromClientOldQueue(event.clientId(), event.stage());
   }
 
 }
